@@ -10,6 +10,7 @@ QSAEM_COM_7 =  function(y,x,z,nj,p,precision=0.0001,MaxIter=300,M=20,pc=0.5,beta
   N = sum(nj)
   d = dim(x)[2]
   q = dim(z)[2]
+  z = as.matrix(z)
   
   delta1 = 0.001
   delta2 = precision
@@ -198,7 +199,7 @@ QSAEM_COM_7 =  function(y,x,z,nj,p,precision=0.0001,MaxIter=300,M=20,pc=0.5,beta
   end.time <- Sys.time()
   time.taken <- end.time - start.time
   
-  res     = list(iter = count,criterio = max(criterio,criterio2),beta = beta,sigmae= sigmae,D = D,EP=EP,table = table,loglik=loglik,AIC=AIC,BIC=BIC,HQ=HQ,time = time.taken)
+  res     = list(iter = count,criterio = max(criterio,criterio2),beta = beta,weights = SAEM_bi[count+1,,],sigmae= sigmae,D = D,EP=EP,table = table,loglik=loglik,AIC=AIC,BIC=BIC,HQ=HQ,time = time.taken)
   conv    = list(teta = tetam[,1:count],EPV = EPV[,1:count])
   obj.out = list(conv=conv,res = res)
   
@@ -215,6 +216,6 @@ QSAEM_COM_7 =  function(y,x,z,nj,p,precision=0.0001,MaxIter=300,M=20,pc=0.5,beta
     close(pb)
   }
   
-  class(obj.out)  =  "QSAEM_COM_7"
+  class(obj.out)  =  "QRLMM"
   return(obj.out)
 }

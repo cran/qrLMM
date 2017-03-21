@@ -35,61 +35,6 @@ genY = function(nj,x,z,beta,sigmae,D,p)
 }
 
 ##########################################################################################
-#ASSYMETRIC LAPLACE DISTRIBUTION (d,p,q and r functions)
-##########################################################################################
-
-dALD = function(y,mu=0,sigma=1,p=0.5)
-{
-  if(length(y) == 0) stop("y must be provided.")
-  if(sum(y[is.na(y)==TRUE]) > 0) stop("There are some NA's values in y.")
-  if(sigma <= 0) stop("sigma must be a positive number.")
-  if(p >= 1 | p <= 0) stop("p must be a real number in (0,1).")
-  if(abs(mu) ==Inf) stop("mu must be a finite real number.")
-  
-  densi = ifelse(test=y<mu,yes=(p*(1-p)/sigma)*exp((1-p)*(y-mu)/sigma),no=(p*(1-p)/sigma)*exp(-(p)*(y-mu)/sigma))
-  return(densi)
-}
-
-pALD = function(q,mu=0,sigma=1,p=0.5,lower.tail=TRUE)
-{
-  if(length(q) == 0) stop("q must be provided.")
-  if(sigma <= 0) stop("sigma must be a positive number.")
-  if(p >= 1 | p <= 0) stop("p must be a real number in (0,1).")
-  if(abs(mu) ==Inf) stop("mu must be a finite real number.")
-  if(lower.tail != TRUE && lower.tail != FALSE) stop("lower.tail must be TRUE or FALSE.")
-  
-  acum = ifelse(test=q<mu,yes=p*exp((1-p)*(q-mu)/sigma),no=1-(1-p)*exp(-(p)*(q-mu)/sigma))
-  ifelse(test=lower.tail == TRUE,yes=return(acum),no=return(1-acum))
-}
-
-qALD = function(prob,mu=0,sigma=1,p=0.5,lower.tail=TRUE)
-{
-  if(length(prob) == 0) stop("prob must be provided.")
-  if(sigma <= 0) stop("sigma must be a positive number.")
-  if(p >= 1 | p <= 0) stop("p must be a real number in (0,1).")
-  if(abs(mu) ==Inf) stop("mu must be a finite real number.")
-  if(lower.tail != TRUE && lower.tail != FALSE) stop("lower.tail must be TRUE or FALSE.")
-  if(sum(prob > 1 | prob < 0) > 0) stop("All elements of prob must be real numbers in [0,1].")
-  
-  q = sapply(X=prob,FUN=function(prob,mu,sigma,p){ifelse(test=lower.tail == TRUE,yes=prob,no=(1-prob));
-                                                  ifelse(test=prob<p,yes=mu+((sigma*log(prob/p))/(1-p)),no=mu-((sigma*log((1-prob)/(1-p)))/p))},mu=mu,sigma=sigma,p=p)
-  return(q)
-}
-
-rALD = function(n,mu=0,sigma=1,p=0.5)
-{
-  if(length(n) == 0) stop("The sample size n must be provided.")
-  if(n <= 0 || n%%1 !=0) stop("The sample size n must be a positive integer value.")
-  if(sigma <= 0) stop("sigma must be a positive number.")
-  if(p >= 1 | p <= 0) stop("p must be a real number in (0,1).")
-  if(abs(mu) ==Inf) stop("mu must be a finite real number.")
-  
-  u = runif(n)
-  r = sapply(X=u,FUN=qALD,mu=mu,sigma=sigma,p=p)
-  return(r)
-}
-
-##########################################################################################
 #b_i|y_i DENSITY (proportional)
 ##########################################################################################
 
@@ -195,3 +140,66 @@ logveroIS = function(beta,sigmae,D,y,x,z,nj,bi,bibi,MIS,n,d,q,p)
   }
   return(logvero)
 }
+
+
+
+#####################
+
+
+###############################################################################
+###############################################################################
+
+
+group.plot = function(x,y,groups,...){
+  if(length(y) != length(groups)) stop("groups does not match with  the provided data. (length(y) != length(groups))")
+  if(length(x) != length(groups)) stop("groups does not match with  the provided data. (length(x) != length(groups))")
+  if(length(y) != length(x)) stop("the provided data does not match. (length(y) != length(x))")
+  nj = c(as.data.frame(table(as.factor(c(groups))))[,2])
+  
+  Ymatrix = Xmatrix = matrix(data = NA,nrow = length(nj),ncol = max(nj))
+  
+  for(j in 1:length(nj))
+  {
+    Xmatrix[j,(1:nj[j])] = x[(sum(nj[1:j-1])+1):(sum(nj[1:j]))]
+    Ymatrix[j,(1:nj[j])] = y[(sum(nj[1:j-1])+1):(sum(nj[1:j]))]
+  }
+  matplot(x = t(Xmatrix),y = t(Ymatrix),...)
+}
+
+#group.plot(x = Time,y = weight,groups = Plot)
+
+
+group.lines = function(x,y,groups,...){
+  if(length(y) != length(groups)) stop("groups does not match with  the provided data. (length(y) != length(groups))")
+  if(length(x) != length(groups)) stop("groups does not match with  the provided data. (length(x) != length(groups))")
+  if(length(y) != length(x)) stop("the provided data does not match. (length(y) != length(x))")
+  nj = c(as.data.frame(table(as.factor(c(groups))))[,2])
+  Ymatrix = Xmatrix = matrix(data = NA,nrow = length(nj),ncol = max(nj))
+  
+  for(j in 1:length(nj))
+  {
+    Xmatrix[j,(1:nj[j])] = x[(sum(nj[1:j-1])+1):(sum(nj[1:j]))]
+    Ymatrix[j,(1:nj[j])] = y[(sum(nj[1:j-1])+1):(sum(nj[1:j]))]
+  }
+  matlines(x = t(Xmatrix),y = t(Ymatrix),...)
+}
+
+#group.lines(x = Time,y = weight,groups = Plot)
+
+
+group.points = function(x,y,groups,...){
+  if(length(y) != length(groups)) stop("groups does not match with  the provided data. (length(y) != length(groups))")
+  if(length(x) != length(groups)) stop("groups does not match with  the provided data. (length(x) != length(groups))")
+  if(length(y) != length(x)) stop("the provided data does not match. (length(y) != length(x))")
+  nj = c(as.data.frame(table(as.factor(c(groups))))[,2])
+  Ymatrix = Xmatrix = matrix(data = NA,nrow = length(nj),ncol = max(nj))
+  
+  for(j in 1:length(nj))
+  {
+    Xmatrix[j,(1:nj[j])] = x[(sum(nj[1:j-1])+1):(sum(nj[1:j]))]
+    Ymatrix[j,(1:nj[j])] = y[(sum(nj[1:j-1])+1):(sum(nj[1:j]))]
+  }
+  matpoints(x = t(Xmatrix),y = t(Ymatrix),...)
+}
+
+#group.points(x = Time,y = weight,groups = Plot)

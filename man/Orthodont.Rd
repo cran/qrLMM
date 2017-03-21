@@ -53,7 +53,6 @@ attach(Orthodont)
 sex = c()
 sex[Sex=="Male"]=0
 sex[Sex=="Female"]=1
-nj = c(as.data.frame(table(Subject))[,2]) 
 
 y  = distance         #response
 x  = cbind(1,sex,age) #design matrix for fixed effects
@@ -61,7 +60,7 @@ z  = cbind(1,age)     #design matrix for random effects
 
 
 #A median regression
-median_reg = QRLMM(y,x,z,nj,MaxIter = 500)
+median_reg = QRLMM(y,x,z,Subject,MaxIter = 500)
 }
 }
 \keyword{datasets}

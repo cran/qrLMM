@@ -1,5 +1,7 @@
-QRLMM = function(y,x,z,nj,p=0.5,precision=0.0001,MaxIter=300,M=10,cp=0.25,beta=NA,sigma=NA,Psi=NA,show.convergence=TRUE,CI=95)
+QRLMM = function(y,x,z,groups,p=0.5,precision=0.0001,MaxIter=300,M=10,cp=0.25,beta=NA,sigma=NA,Psi=NA,show.convergence=TRUE,CI=95)
 {
+  nj = c(as.data.frame(table(groups))[,2])
+  
   if(length(p)==1)
   {
     ## Verify error at parameters specification
@@ -80,8 +82,13 @@ QRLMM = function(y,x,z,nj,p=0.5,precision=0.0001,MaxIter=300,M=10,cp=0.25,beta=N
     cat('\n')
     cat('sigma =',round(out$res$sigmae,5),'\n')
     cat('\n')
-    cat('Random effects Variance-Covariance Matrix matrix \n')
-    dimnames(out$res$D) <- list(namesz,namesz)
+    cat('Random effects \n')
+    cat('\n')
+    cat('i) Weights \n')
+    print(round(out$res$weights,5))
+    cat('\n')
+    cat('ii) Variance-Covariance Matrix \n')
+        dimnames(out$res$D) <- list(namesz,namesz)
     print(round(out$res$D,5))
     cat('\n')
     cat('------------------------\n')
@@ -132,7 +139,8 @@ QRLMM = function(y,x,z,nj,p=0.5,precision=0.0001,MaxIter=300,M=10,cp=0.25,beta=N
       }
     }
     
-    res     = list(iter = out$res$iter,criteria = out$res$criterio,beta = out$res$beta,sigma= out$res$sigmae,Psi = out$res$D,SE=out$res$EP,table = out$res$table,loglik=out$res$loglik,AIC=out$res$AIC,BIC=out$res$BIC,HQ=out$res$HQ,time = out$res$time)
+    par(mfrow=c(1,1))
+    res     = list(iter = out$res$iter,criteria = out$res$criterio,beta = out$res$beta,weights = round(out$res$weights,5), sigma= out$res$sigmae,Psi = out$res$D,SE=out$res$EP,table = out$res$table,loglik=out$res$loglik,AIC=out$res$AIC,BIC=out$res$BIC,HQ=out$res$HQ,time = out$res$time)
     obj.out = list(conv=out$conv,res = res)
     class(obj.out)  =  "QRLMM"
     return(obj.out)  
@@ -238,7 +246,7 @@ QRLMM = function(y,x,z,nj,p=0.5,precision=0.0001,MaxIter=300,M=10,cp=0.25,beta=N
       cat('\n')
       cat("Processing time =",out$res$time,units(out$res$time))
       
-      res      = list(iter = out$res$iter,criteria = out$res$criterio,beta = out$res$beta,sigma= out$res$sigmae,Psi = out$res$D,SE=out$res$EP,table = out$res$table,loglik=out$res$loglik,AIC=out$res$AIC,BIC=out$res$BIC,HQ=out$res$HQ,time = out$res$time)
+      res      = list(iter = out$res$iter,criteria = out$res$criterio,beta = out$res$beta,weights = round(out$res$weights,5),sigma= out$res$sigmae,Psi = out$res$D,SE=out$res$EP,table = out$res$table,loglik=out$res$loglik,AIC=out$res$AIC,BIC=out$res$BIC,HQ=out$res$HQ,time = out$res$time)
       obj.outk = list(conv=out$conv,res = res)
       obj.out[[k]] = obj.outk
     }
@@ -296,6 +304,7 @@ QRLMM = function(y,x,z,nj,p=0.5,precision=0.0001,MaxIter=300,M=10,cp=0.25,beta=N
       }
     }
     title("Point estimative and 95% CI for model parameters", outer=TRUE)
+    par(mfrow=c(1,1))
     
     if(show.convergence=="TRUE")
     {
@@ -325,6 +334,7 @@ QRLMM = function(y,x,z,nj,p=0.5,precision=0.0001,MaxIter=300,M=10,cp=0.25,beta=N
           abline(v=cpl,lty=2)
         }
         title(paste("Convergence plots for quantile",p[k]), outer=TRUE)
+        par(mfrow=c(1,1))
       }
     }
     class(obj.out)  =  "QRLMM"

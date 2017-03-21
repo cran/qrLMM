@@ -5,7 +5,7 @@
 Package for Quantile Regression for Linear Mixed-Effects Model
 }
 \description{
-This package contains a principal function that performs a quantile regression for a Linear Mixed-Effects Model using the Stochastic-Approximation of the EM Algorithm (SAEM) for an unique or a set of quantiles. It also contains the d,p,q and r functions for the Asymmetric Laplace Distribution defined in Koenker and Machado (1999) useful for quantile regression. 
+This package contains a principal function that performs a quantile regression for a Linear Mixed-Effects Model using the Stochastic-Approximation of the EM Algorithm (SAEM) for an unique or a set of quantiles.
 
 Exploiting the nice hierarchical representation of the ALD, our classical approach follows the Stochastic Approximation of the EM(SAEM) algorithm for deriving exact maximum likelihood estimates of the fixed-effects and variance components.
 }
@@ -38,7 +38,8 @@ Yu, K., & Zhang, J. (2005). A three-parameter asymmetric Laplace distribution an
 \keyword{package}
 \keyword{quantile}
 \keyword{ALD}
-\seealso{\code{\link{dALD}}, \code{\link{pALD}}, \code{\link{qALD}}, \code{\link{rALD}}, \code{\link{QRLMM}}
+\seealso{\code{\link{Orthodont}}, \code{\link{Cholesterol}}, \code{\link{QRLMM}},
+\code{\link[qrNLMM]{QRNLMM}}
 }
 \examples{
 #See examples for the QRLMM function linked above.

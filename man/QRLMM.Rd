@@ -8,7 +8,7 @@ Quantile Regression for Linear Mixed-Effects Models
 Performs a quantile regression for a LMEM using the Stochastic-Approximation of the EM Algorithm (SAEM) for an unique or a set of quantiles.
 }
 \usage{
-QRLMM(y,x,z,nj,p=0.5,precision=0.0001,MaxIter=300,M=10,cp=0.25,
+QRLMM(y,x,z,groups,p=0.5,precision=0.0001,MaxIter=300,M=10,cp=0.25,
       beta=NA,sigma=NA,Psi=NA,show.convergence=TRUE,CI=95)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -22,8 +22,8 @@ design matrix for the fixed effects of dimension \eqn{N x d} where \eqn{d} repre
   \item{z}{
 design matrix for the random effects of dimension \eqn{N x q} where \eqn{q} represents the number of random effects. 
 }
-  \item{nj}{
-Vector of dimension \eqn{n} containing the number of observations per subject. Must sum \eqn{N}.
+  \item{groups}{
+factor of dimension \eqn{N} specifying the partitions of the data over which the random effects vary.
 }
   \item{p}{
 unique quantile or a set of quantiles related to the quantile regression.
@@ -59,6 +59,12 @@ Confidence to be used for the Confidence Interval when a grid of quantiles is pr
 
 }
 \details{
+This function considers a linear mixed-effects model defined as:
+
+\deqn{y_i = x_i*\beta_p + z_i*b_i + \epsilon_i;}
+
+where, \eqn{x_i} and \eqn{z_i} are the design matrices for the fixed and random effects respectively, \eqn{\beta_p} are the fixed effects (associated to the \eqn{p}-th quantile), \eqn{b_i} are the random (normal) effects and \eqn{\epsilon_i} is a random error (considered to be asymmetric Laplace).
+
 This algorithm performs the SAEM algorithm proposed by Delyon et al. (1999), a stochastic version of the usual EM Algorithm deriving exact maximum likelihood estimates of the fixed-effects and variance components.
 
 If the initial parameters are not provided, by default, the fixed effects parameter \eqn{\beta} and dispersion parameter \eqn{\sigma} will be the maximum Likelihood Estimates for an Asymmetric Laplace Distribution (obviating the random term). See Yu & Zhang
@@ -81,6 +87,7 @@ The second element of the list is \code{res}, a list of 12 elements detailed as
 \item{iter}{number of iterations.}
 \item{criteria}{attained criteria value.}
 \item{beta}{fixed effects estimates.}
+\item{weights}{random effects weights (\eqn{b_i}).}
 \item{sigma}{scale parameter estimate for the error term.}
 \item{Psi}{Random effects variance-covariance estimate matrix.}
 \item{SE}{Standard Error estimates.}
@@ -106,29 +113,47 @@ If a grid of quantiles was provided, the result is a list of the same dimension 
 }
 
 \seealso{
-\code{\link{dALD}}, \code{\link{pALD}}, \code{\link{qALD}}, \code{\link{rALD}}
+\code{\link{Orthodont}}, \code{\link{Cholesterol}},\code{\link[qrNLMM]{QRNLMM}}
 }
 \examples{
 #Using the Orthodontic distance growth data
 
-library(nlme)
 data(Orthodont)
 attach(Orthodont)
 
 y  = distance #response
 x  = cbind(1,c(rep(0,64),rep(1,44)),age) #design matrix for fixed effects
 z  = cbind(1,age) #design matrix for random effects
-nj = rep(4,27)  #balanced
+groups = Subject
 
 \dontrun{
-QRLMM(y,x,z,nj,MaxIter=100) #a quick median regression
 
+#a quick median regression
+model = QRLMM(y,x,z,groups,MaxIter=200)
 
+beta = save$res$beta  #fixed effects
+weights = save$res$weight  #random weights
+nj = c(as.data.frame(table(groups))[,2]) #obs per subject
+fixed = x%*%beta  #global mean
+random = rep(0,dim(x)[1])  #initializing random shift
+
+for (j in 1:length(nj))
+{ 
+  z1=matrix(z[(sum(nj[1:j-1])+1):(sum(nj[1:j])),],ncol=dim(z)[2])
+  random[(sum(nj[1:j-1])+1):(sum(nj[1:j]))] = z1%*%weights[j,]
+}
+
+pred = fixed + random  #predictions
+group.plot(age,pred,groups,type = "l")
+group.points(age,distance,groups)
+
+##########
 #Fit a very quick regression for the three quartiles (Just for having an idea!)
-QRLMM(y,x,z,nj,p = c(0.25,0.50,0.75),MaxIter=50,M=10)
+
+QRLMM(y,x,z,groups,p = c(0.25,0.50,0.75),MaxIter=50,M=10)
 
 #A full profile quantile regression (This might take some time)
-QRLMM(y,x,z,nj,p = seq(0.05,0.95,0.05),MaxIter=300,M=10)
+QRLMM(y,x,z,groups,p = seq(0.05,0.95,0.05),MaxIter=300,M=10)
 
 #A simple output example
 -------------------------------------------------
@@ -146,7 +171,12 @@ beta 1 17.08405 0.53524 31.91831 0
 beta 2 2.15393 0.36929 5.83265 0
 beta 3 0.61882 0.05807 10.65643 0
 sigma = 0.38439
-Random effects Varcov matrix
+Random effects
+
+i)  weights
+   ...
+   
+ii) Varcov matrix
 z1 z2
 z1 0.16106 -0.00887
 z2 -0.00887 0.02839

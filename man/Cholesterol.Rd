@@ -33,14 +33,12 @@ https://www.framinghamheartstudy.org/about-fhs/background.php
 data(Cholesterol)
 attach(Cholesterol)
 
-nj = c(as.data.frame(table(newid))[,2])
-
 y  = cholst            #response
 x  = cbind(1,sex,age)  #design matrix for fixed effects
 z  = cbind(1,year)     #design matrix for random effects
 
 #A median regression
-median_reg = QRLMM(y,x,z,nj,MaxIter = 500)
+median_reg = QRLMM(y,x,newid,nj,MaxIter = 500)
 }
 }
 \keyword{datasets}
