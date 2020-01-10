@@ -1,11 +1,11 @@
-976a8b8716fb2e531fa0467a3ecd3504 *DESCRIPTION
-1c556f3524508ca671fafdd7f6460754 *NAMESPACE
+f38507fbd60a9556da0cafa4315fdbba *DESCRIPTION
+7a2e12e0f5d94c017a92b423b5ab6b13 *NAMESPACE
 c72de609ada0518dc1288f5ea67fbcd9 *R/HelpfulFunctions.R
 3521e455096d14dfedb79b5cf50f6180 *R/Intervalos2.R
-b1ad8bed8de4e7e72b2d976fd96f8ee4 *R/QRLMM.R
+fc9b3aaf3c22cbeb240f6b878533c132 *R/QRLMM.R
 aade7528dba6436d263fb02685596bbc *R/SAEM.R
-c83cf3b65778199d4ea7947eadc87135 *data/Cholesterol.txt.gz
-eed1173df923896098639c715f754592 *data/Orthodont.txt.gz
+c2ce6df6b36b41203ebb9ae184c7cc4d *data/Cholesterol.txt
+24af8c6d951aa9dffaf81df0aa07e48c *data/Orthodont.txt
 84d3c54d56184360eb591afc49a95f7f *man/Cholesterol.Rd
 669e76e6683857da4a38f26ac1911534 *man/Orthodont.Rd
 ebf2bc16621e90a6ce5ad2d20a918a1f *man/QRLMM.Rd

@@ -48,7 +48,7 @@ QRLMM = function(y,x,z,groups,p=0.5,precision=0.0001,MaxIter=300,M=10,cp=0.25,be
     if(is.na(Psi) == FALSE)
     {  
       if( (ncol(as.matrix(D)) != ncol(as.matrix(z))) | ((nrow(as.matrix(D)) != ncol(as.matrix(z)))) ) stop("D must be a square matrix of dims equal to the columns of z")
-      if(is.positive.definite(D)==FALSE) stop("D must be a square symmetrical real posite definite matrix.") 
+      if(det(D)<=0) stop("D must be a square symmetrical real posite definite matrix.") 
     }
     
     #intial values
