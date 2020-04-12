@@ -116,6 +116,9 @@ If a grid of quantiles was provided, the result is a list of the same dimension 
 \code{\link{Orthodont}}, \code{\link{Cholesterol}},\code{\link[qrNLMM]{QRNLMM}}
 }
 \examples{
+
+\dontrun{
+
 #Using the Orthodontic distance growth data
 
 data(Orthodont)
@@ -126,26 +129,23 @@ x  = cbind(1,c(rep(0,64),rep(1,44)),age) #design matrix for fixed effects
 z  = cbind(1,age) #design matrix for random effects
 groups = Subject
 
-\dontrun{
-
-#a quick median regression
 model = QRLMM(y,x,z,groups,MaxIter=200)
 
-beta = save$res$beta  #fixed effects
-weights = save$res$weight  #random weights
+beta = model$res$beta  #fixed effects
+weights = model$res$weight  #random weights
 nj = c(as.data.frame(table(groups))[,2]) #obs per subject
-fixed = x%*%beta  #global mean
+fixed = tcrossprod(x,t(beta))
 random = rep(0,dim(x)[1])  #initializing random shift
 
-for (j in 1:length(nj))
-{ 
+for (j in 1:length(nj)){ 
   z1=matrix(z[(sum(nj[1:j-1])+1):(sum(nj[1:j])),],ncol=dim(z)[2])
-  random[(sum(nj[1:j-1])+1):(sum(nj[1:j]))] = z1%*%weights[j,]
+  random[(sum(nj[1:j-1])+1):(sum(nj[1:j]))] = tcrossprod(z1,t(weights[j,]))
 }
 
 pred = fixed + random  #predictions
 group.plot(age,pred,groups,type = "l")
 group.points(age,distance,groups)
+
 
 ##########
 #Fit a very quick regression for the three quartiles (Just for having an idea!)

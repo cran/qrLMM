@@ -1,8 +1,8 @@
 Package: qrLMM
 Type: Package
 Title: Quantile Regression for Linear Mixed-Effects Models
-Version: 2.0
-Date: 2020-01-04
+Version: 2.1
+Date: 2020-04-11
 Author: Christian E. Galarza <cgalarza88@gmail.com> and Victor H. Lachos <hlachos@ime.unicamp.br>
 Maintainer: Christian E. Galarza <cgalarza88@gmail.com>
 Imports: mvtnorm, lqr, quantreg, psych, tcltk, ald
@@ -15,6 +15,6 @@ Description: Quantile regression (QR) for Linear
              convergence and fitting results.
 License: GPL (>= 2)
 NeedsCompilation: no
-Packaged: 2020-01-04 11:32:46 UTC; cgala
+Packaged: 2020-04-12 00:23:40 UTC; cgala
 Repository: CRAN
-Date/Publication: 2020-01-10 12:00:05 UTC
+Date/Publication: 2020-04-12 05:30:08 UTC
