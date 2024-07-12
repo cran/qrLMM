@@ -167,7 +167,8 @@ QRLMM = function(y,x,z,groups,p=0.5,precision=0.0001,MaxIter=300,M=10,cp=0.25,be
     if( length(y) != nrow(as.matrix(z)) ) stop("z variable does not have the same number of lines than y")
     
     #Validating supports
-    if(all(p > 0 && p < 1) == FALSE) stop("p vector must contain real values in (0,1)")
+    #if(all(p > 0 && p < 1) == FALSE) stop("p vector must contain real values in (0,1)")
+    if ((min(p)>0 & max(p) <1) ==FALSE) stop("p vector must contain real values in (0,1)")
     if(precision <= 0) stop("precision must be a positive value (suggested to be small)")
     if(MaxIter <= 0 |MaxIter%%1!=0) stop("MaxIter must be a positive integer value")
     if(M <= 0 |M%%1!=0) stop("M must be a positive integer value >= 10")
